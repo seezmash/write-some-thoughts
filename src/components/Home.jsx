@@ -21,11 +21,11 @@ const DashboardComponent = () => {
 
   return (
     <Grid style={gridStyle}>
-      <Box display="flex" justifyContent="flex-end" style={{ width: '100%' }}>
+      {/* <Box display="flex" justifyContent="flex-end" style={{ width: '100%' }}>
         <Button onClick={handleLogout} variant="contained" color="primary">
           Log me out
         </Button>
-      </Box>
+      </Box> */}
       <Typography variant="h6">Write your thoughts here! 🖊️</Typography>
       <Paper elevation={1} style={noteInputStyle} variant="outlinedf">
         <TextField fullWidth variant="outlined"></TextField>
@@ -41,7 +41,6 @@ const DashboardComponent = () => {
               elevation={1}
               key={'noteid_' + index}
               style={thoughtItemStyle}
-              flexShrink={1}
             >
               {item}
             </Paper>

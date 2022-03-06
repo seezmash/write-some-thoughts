@@ -18,6 +18,14 @@ export const AuthProvider = ({ children }) => {
     return auth.signInWithEmailAndPassword(email, password)
   }
 
+  const resetPassword = (email) => {
+    return auth.sendPasswordResetEmail(email)
+  }
+
+  const logout = () => {
+    return auth.signOut()
+  }
+
   useEffect(() => {
     const unsubAuth = auth.onAuthStateChanged((user) => {
       setCurrentUser(user)
@@ -28,7 +36,10 @@ export const AuthProvider = ({ children }) => {
   const value = {
     currentUser,
     signup,
-    login
+    login,
+    logout,
+    resetPassword
   }
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

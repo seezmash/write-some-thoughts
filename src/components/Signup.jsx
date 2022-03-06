@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 import { useAuth } from '../context/AuthContext'
 import Alert from '@material-ui/lab/Alert'
@@ -15,6 +15,7 @@ const SignupComponent = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const { signup } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -27,6 +28,7 @@ const SignupComponent = () => {
       setError('')
       setLoading(true)
       await signup(signupForm.email.value, signupForm.password.value)
+      navigate('/')
     } catch (error) {
       setError(error.code)
     }
@@ -86,8 +88,8 @@ const SignupComponent = () => {
           </Button>
         </form>
         <Typography style={linkStyle}>
-          Have an account?
-          <Link to="/login"> Log in here</Link>
+          <span>Have an account? </span>
+          <Link to="/login">Log in here</Link>
         </Typography>
       </Paper>
     </Grid>
