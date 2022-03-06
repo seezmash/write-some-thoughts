@@ -14,7 +14,7 @@ const linkStyle2 = {
   margin: '15px 0 0 0'
 }
 const alertStyle = {
-  margin: '0 0 10px 0'
+  margin: '20px 0'
 }
 
 export { paperStyle, buttonStyle, linkStyle, linkStyle2, alertStyle }

@@ -25,11 +25,12 @@ const LoginComponent = () => {
       setError('')
       setLoading(true)
       await login(loginForm.email.value, loginForm.password.value)
+      setLoading(false)
       navigate('/')
     } catch (error) {
+      setLoading(false)
       setError(error.code)
     }
-    setLoading(false)
   }
 
   return (
@@ -77,11 +78,11 @@ const LoginComponent = () => {
           </Button>
         </form>
         <Typography style={linkStyle}>
-          <Link to="/passwordreset">Forgot your password?</Link>
+          <Link to="/forgot-password">Forgot your password?</Link>
         </Typography>
         <Typography style={linkStyle2}>
-          Need an account?
-          <Link to="/signup"> Sign up</Link>
+          <span>Need an account? </span>
+          <Link to="/signup">Sign up</Link>
         </Typography>
       </Paper>
     </Grid>

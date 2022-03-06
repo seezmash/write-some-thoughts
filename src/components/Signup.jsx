@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 import { useAuth } from '../context/AuthContext'
 import Alert from '@material-ui/lab/Alert'
+import { createUserDocument } from '../functions/firestore'
 import {
   paperStyle,
   buttonStyle,
@@ -15,6 +16,7 @@ const SignupComponent = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const { signup } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -26,11 +28,21 @@ const SignupComponent = () => {
     try {
       setError('')
       setLoading(true)
-      await signup(signupForm.email.value, signupForm.password.value)
+      await signup(signupForm.email.value, signupForm.password.value).then(
+        (cred) => {
+          console.log(cred)
+          createUserDocument(
+            cred.user.uid,
+            signupForm.firstName.value,
+            signupForm.lastName.value
+          )
+        }
+      )
+      navigate('/')
     } catch (error) {
       setError(error.code)
     }
-    setLoading(false)
+    // setLoading(false)
   }
 
   return (
@@ -44,9 +56,16 @@ const SignupComponent = () => {
         )}
         <form id="signup_form" onSubmit={handleSubmit}>
           <TextField
-            name="username"
-            label="Username"
-            placeholder="Enter username"
+            name="firstName"
+            label="First name"
+            placeholder="Enter first name"
+            fullWidth
+            required
+          ></TextField>
+          <TextField
+            name="lastName"
+            label="Last name"
+            placeholder="Enter last name"
             fullWidth
             required
           ></TextField>
@@ -86,8 +105,8 @@ const SignupComponent = () => {
           </Button>
         </form>
         <Typography style={linkStyle}>
-          Have an account?
-          <Link to="/login"> Log in here</Link>
+          <span>Have an account? </span>
+          <Link to="/login">Log in here</Link>
         </Typography>
       </Paper>
     </Grid>
