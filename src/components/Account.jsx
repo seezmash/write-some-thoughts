@@ -1,25 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import Alert from '@material-ui/lab/Alert'
-import { gridStyle } from '../mui/homeStyles'
 import { useAuth } from '../context/AuthContext'
-import { linkStyle, alertStyle } from '../mui/formStyles'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { logout } from '../functions/auth'
+import { db } from '../firebase'
+//Styles
+import { alertStyle, gridStyle, accountDetailsStyles } from '../mui/styles'
 
 const DashboardComponent = () => {
   const [error, setError] = useState('')
-  const { currentUser, logout } = useAuth()
-  const navigate = useNavigate()
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
 
-  const tempThoughts = [
-    'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu',
-    'Lacus vestibulum sed arcu non odio euismod lacinia. Quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis. Semper auctor neque vitae tempus quam. Amet nulla facilisi morbi tempus iaculis urna id volutpat lacus.',
-    'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    'Cursus turpis massa tincidunt dui ut ornare. Laoreet id donec ultrices tincidunt arcu non.',
-    'Felis eget nunc lobortis mattis aliquam faucibus purus in. Nulla facilisi nullam vehicula ipsum a arcu cursus.'
-  ]
+  const { currentUser } = useAuth()
+  const navigate = useNavigate()
 
   const handleLogout = async () => {
     setError('')
@@ -31,17 +27,21 @@ const DashboardComponent = () => {
     }
   }
 
-  const goToHomePage = () => {
-    navigate('/')
-  }
-
-  const accountDetailsStyles = {
-    width: '100%',
-    maxWidth: '700px',
-    minHeight: '80px',
-    margin: '20px 0',
-    padding: '20px'
-  }
+  useEffect(() => {
+    if (currentUser && currentUser.uid) {
+      db.collection('users')
+        .doc(currentUser.uid)
+        .onSnapshot((doc) => {
+          let docData = doc.data()
+          if (docData && docData.firstName) {
+            setFirstName(docData.firstName)
+          }
+          if (docData && docData.lastName) {
+            setLastName(docData.lastName)
+          }
+        })
+    }
+  }, [])
 
   return (
     <Grid style={gridStyle}>
@@ -54,13 +54,13 @@ const DashboardComponent = () => {
         )}
         <Typography>
           <strong>First name: </strong>
-          <span>{currentUser && currentUser.email}</span>
+          <span>{firstName}</span>
         </Typography>
         <Typography>
           <strong>Last name: </strong>
-          <span>{currentUser && currentUser.email}</span>
+          <span>{lastName}</span>
         </Typography>
-        <Typography>
+        <Typography style={{ marginTop: '20px' }}>
           <strong>Email: </strong>
           <span>{currentUser && currentUser.email}</span>
         </Typography>
@@ -73,7 +73,9 @@ const DashboardComponent = () => {
 
       <Box display="flex" style={{ marginTop: '40px' }}>
         <Button
-          onClick={goToHomePage}
+          onClick={() => {
+            navigate('/')
+          }}
           style={{ marginRight: '10px' }}
           variant="contained"
           color="primary"

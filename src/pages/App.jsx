@@ -26,7 +26,14 @@ const App = () => {
             />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/account" element={<Account />} />
+            <Route
+              path="/account"
+              element={
+                <PrivateRoute>
+                  <Account />
+                </PrivateRoute>
+              }
+            />
             <Route path="/forgot-password" element={<Forgot />} />
           </Routes>
         </AuthProvider>

@@ -1,31 +1,29 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-import { useAuth } from '../context/AuthContext'
 import Alert from '@material-ui/lab/Alert'
+import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
+import { login } from '../functions/auth'
+// Styles
 import {
   paperStyle,
   buttonStyle,
   linkStyle,
   linkStyle2,
   alertStyle
-} from '../mui/formStyles'
+} from '../mui/styles'
 
 const LoginComponent = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { login } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     let loginForm = document.getElementById('login_form')
-
     try {
       setError('')
       setLoading(true)
       await login(loginForm.email.value, loginForm.password.value)
-      setLoading(false)
       navigate('/')
     } catch (error) {
       setLoading(false)
@@ -43,19 +41,12 @@ const LoginComponent = () => {
           </Alert>
         )}
         <form id="login_form" onSubmit={handleSubmit}>
-          {/* <TextField
-            name="username"
-            label="Username"
-            placeholder="Enter username"
-            fullWidth
-            required
-          ></TextField> */}
           <TextField
             name="email"
             label="Email"
             placeholder="Enter email"
             type="email"
-            fullWidth
+            style={{ width: '100%' }}
             required
           ></TextField>
           <TextField
@@ -63,7 +54,7 @@ const LoginComponent = () => {
             label="Password"
             placeholder="Enter password"
             type="password"
-            fullWidth
+            style={{ width: '100%' }}
             required
           ></TextField>
           <Button
@@ -72,7 +63,6 @@ const LoginComponent = () => {
             color="primary"
             style={buttonStyle}
             variant="contained"
-            fullWidth
           >
             Log in
           </Button>

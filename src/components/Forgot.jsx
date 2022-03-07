@@ -1,35 +1,31 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-import { useAuth } from '../context/AuthContext'
+import { resetPassword } from '../functions/auth'
 import Alert from '@material-ui/lab/Alert'
+// Styles
 import {
   paperStyle,
   buttonStyle,
   linkStyle,
   linkStyle2,
   alertStyle
-} from '../mui/formStyles'
+} from '../mui/styles'
 
 const ForgotPassword = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
-  const { resetPassword } = useAuth()
-  const navigate = useNavigate()
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     let forgotPasswordForm = document.getElementById('login_form')
-
     try {
       setMessage('')
       setError('')
       setLoading(true)
       await resetPassword(forgotPasswordForm.email.value)
       setMessage('Check your email for the reset link')
-      // navigate('/')
     } catch (error) {
       setError(error.code)
     }
@@ -51,19 +47,12 @@ const ForgotPassword = () => {
           </Alert>
         )}
         <form id="login_form" onSubmit={handleSubmit}>
-          {/* <TextField
-            name="username"
-            label="Username"
-            placeholder="Enter username"
-            fullWidth
-            required
-          ></TextField> */}
           <TextField
             name="email"
             label="Email"
             placeholder="Enter email"
             type="email"
-            fullWidth
+            style={{ width: '100%' }}
             required
           ></TextField>
           <Button
@@ -72,7 +61,6 @@ const ForgotPassword = () => {
             color="primary"
             style={buttonStyle}
             variant="contained"
-            fullWidth
           >
             Reset password
           </Button>

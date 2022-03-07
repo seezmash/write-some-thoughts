@@ -1,9 +1,9 @@
 import { db } from '../firebase'
+import { useAuth } from '../context/AuthContext'
 
 // ========== Add data
 
 const createUserDocument = (uid, firstName, lastName) => {
-  console.log(uid)
   db.collection('users')
     .doc(uid)
     .set({
@@ -18,17 +18,11 @@ const createUserDocument = (uid, firstName, lastName) => {
     })
 }
 
-const addThoughtToDocument = (uid, newThoughtsArray) => {
-  db.collection('cities')
-    .doc('SF')
-    .onSnapshot((doc) => {
-      console.log('Current data: ', doc.data())
-    })
-  console.log(newThoughtsArray)
+const addThoughtToDocument = (uid, newThoughts) => {
   db.collection('thoughts')
     .doc(uid)
     .set({
-      thoughtsArray: newThoughtsArray
+      thoughtsArray: newThoughts
     })
     .then(() => {
       console.log('Document successfully written!')
@@ -40,13 +34,14 @@ const addThoughtToDocument = (uid, newThoughtsArray) => {
 
 // ========== Get data
 
-const subToCurrentUserThoughts = (uid) => {
-  let unsub = db
-    .collection('thoughts')
+const subToCurrentUserThoughts = async (uid) => {
+  db.collection('thoughts')
     .doc(uid)
     .onSnapshot((doc) => {
-      console.log('Current data: ', doc.data())
+      // console.log('Current data: ', doc.data())
+      return doc.data
     })
+  return null
 }
 
 export { createUserDocument, addThoughtToDocument, subToCurrentUserThoughts }

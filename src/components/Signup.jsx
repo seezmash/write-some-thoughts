@@ -1,27 +1,20 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-import { useAuth } from '../context/AuthContext'
 import Alert from '@material-ui/lab/Alert'
+import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
+import { signup } from '../functions/auth'
 import { createUserDocument } from '../functions/firestore'
-import {
-  paperStyle,
-  buttonStyle,
-  linkStyle,
-  linkStyle2,
-  alertStyle
-} from '../mui/formStyles'
+// Styles
+import { paperStyle, buttonStyle, linkStyle, alertStyle } from '../mui/styles'
 
 const SignupComponent = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { signup } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     let signupForm = document.getElementById('signup_form')
-
     if (signupForm.password.value !== signupForm.passwordConfirm.value) {
       return setError('Passwords do not match.')
     }
@@ -30,7 +23,6 @@ const SignupComponent = () => {
       setLoading(true)
       await signup(signupForm.email.value, signupForm.password.value).then(
         (cred) => {
-          console.log(cred)
           createUserDocument(
             cred.user.uid,
             signupForm.firstName.value,
@@ -40,9 +32,9 @@ const SignupComponent = () => {
       )
       navigate('/')
     } catch (error) {
+      setLoading(false)
       setError(error.code)
     }
-    // setLoading(false)
   }
 
   return (
@@ -59,14 +51,14 @@ const SignupComponent = () => {
             name="firstName"
             label="First name"
             placeholder="Enter first name"
-            fullWidth
+            style={{ width: '100%' }}
             required
           ></TextField>
           <TextField
             name="lastName"
             label="Last name"
             placeholder="Enter last name"
-            fullWidth
+            style={{ width: '100%' }}
             required
           ></TextField>
           <TextField
@@ -74,7 +66,7 @@ const SignupComponent = () => {
             label="Email"
             placeholder="Enter email"
             type="email"
-            fullWidth
+            style={{ width: '100%' }}
             required
           ></TextField>
           <TextField
@@ -82,7 +74,7 @@ const SignupComponent = () => {
             label="Password"
             placeholder="Enter password"
             type="password"
-            fullWidth
+            style={{ width: '100%' }}
             required
           ></TextField>
           <TextField
@@ -90,7 +82,7 @@ const SignupComponent = () => {
             label="Confirm password"
             placeholder="Enter password"
             type="password"
-            fullWidth
+            style={{ width: '100%' }}
             required
           ></TextField>
           <Button
@@ -99,7 +91,6 @@ const SignupComponent = () => {
             color="primary"
             style={buttonStyle}
             variant="contained"
-            fullWidth
           >
             Sign up
           </Button>
