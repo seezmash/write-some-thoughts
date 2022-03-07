@@ -1,34 +1,11 @@
-import { useState, useEffect } from 'react'
-import { Button, Grid, Typography } from '@material-ui/core'
+import { Grid, Button } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
-import { db } from '../firebase'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { logout } from '../functions/auth'
 
 const NavComponent = () => {
-  const [firstName, setFirstName] = useState('')
-  const { currentUser } = useAuth()
+  const { currentUser, logout } = useAuth()
   const navigate = useNavigate()
-
-  const goToLogin = () => {
-    console.log('go to login')
-  }
-
-  useEffect(() => {
-    if (currentUser && currentUser.uid) {
-      db.collection('users')
-        .doc(currentUser.uid)
-        .onSnapshot((doc) => {
-          let docData = doc.data()
-          if (docData && docData.firstName) {
-            setFirstName(docData.firstName)
-          }
-        })
-    } else {
-      setFirstName('')
-    }
-  }, [currentUser])
 
   return (
     <nav className="nav_bar">
@@ -44,21 +21,6 @@ const NavComponent = () => {
             paddingTop: '10px'
           }}
         >
-          {/* <div className="nav_logo_button">
-            <img className="nav_logo" src="/tailwind.svg" alt="logo" />
-          </div> */}
-          {/* <Typography noWrap style={{ width: '400px' }}>
-            write some thoughts
-          </Typography> */}
-          {/* {firstName && (
-            <Typography
-              fontWeight="fontWeightMedium"
-              noWrap
-              style={{ padding: '8px 30px 0 0', display: 'table' }}
-            >
-              Welcome, <span>{firstName}</span>
-            </Typography>
-          )} */}
           {currentUser && (
             <Box
               display="flex"

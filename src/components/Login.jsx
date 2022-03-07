@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import Alert from '@material-ui/lab/Alert'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-import { login } from '../functions/auth'
 // Styles
 import {
   paperStyle,
@@ -16,6 +16,7 @@ const LoginComponent = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()

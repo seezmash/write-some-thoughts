@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-import { resetPassword } from '../functions/auth'
 import Alert from '@material-ui/lab/Alert'
 // Styles
 import {
@@ -16,6 +16,7 @@ const ForgotPassword = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const { resetPassword } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,11 +26,12 @@ const ForgotPassword = () => {
       setError('')
       setLoading(true)
       await resetPassword(forgotPasswordForm.email.value)
+      setLoading(false)
       setMessage('Check your email for the reset link')
     } catch (error) {
+      setLoading(false)
       setError(error.code)
     }
-    setLoading(false)
   }
 
   return (

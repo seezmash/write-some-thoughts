@@ -2,21 +2,23 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Alert from '@material-ui/lab/Alert'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-import { signup } from '../functions/auth'
-import { createUserDocument } from '../functions/firestore'
+import { useAuth } from '../context/AuthContext'
+import { useDb } from '../context/DbContext'
 // Styles
 import { paperStyle, buttonStyle, linkStyle, alertStyle } from '../mui/styles'
 
 const SignupComponent = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const { signup } = useAuth()
+  const { createUserDocument } = useDb()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     let signupForm = document.getElementById('signup_form')
     if (signupForm.password.value !== signupForm.passwordConfirm.value) {
-      return setError('Passwords do not match.')
+      return setError('Passwords do not match')
     }
     try {
       setError('')
@@ -26,7 +28,8 @@ const SignupComponent = () => {
           createUserDocument(
             cred.user.uid,
             signupForm.firstName.value,
-            signupForm.lastName.value
+            signupForm.lastName.value,
+            signupForm.email.value
           )
         }
       )

@@ -1,45 +1,46 @@
-import { useState, useEffect } from 'react'
-import { db } from '../firebase'
-import { useAuth } from '../context/AuthContext'
-import { addThoughtToDocument } from '../functions/firestore'
 import Box from '@material-ui/core/Box'
 import SaveIcon from '@material-ui/icons/Save'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
+import { useAuth } from '../context/AuthContext'
+import { useDb } from '../context/DbContext'
 // Styles
 import { noteInputStyle, gridStyle, thoughtItemStyle } from '../mui/styles'
 
 const DashboardComponent = () => {
-  const [thoughts, setThoughts] = useState([])
-  const [firstName, setFirstName] = useState('')
   const { currentUser } = useAuth()
+  const { thoughts, firstName, addThoughtToDocument } = useDb()
 
-  useEffect(() => {
-    if (currentUser && currentUser.uid) {
-      let unsubThoughts = db
-        .collection('thoughts')
-        .doc(currentUser.uid)
-        .onSnapshot((doc) => {
-          let docData = doc.data()
-          if (docData && docData.thoughtsArray) {
-            setThoughts(docData.thoughtsArray)
-          }
-        })
-    }
-  }, [currentUser])
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const thoughtInputForm = document.getElementById('thought_input_form')
     let newThoughts = Array.from(thoughts)
     let thoughtValue = thoughtInputForm.thought.value
     if (thoughtValue.length > 0) {
       newThoughts.unshift(thoughtValue)
-      addThoughtToDocument(currentUser.uid, newThoughts)
+      await addThoughtToDocument(currentUser.uid, newThoughts)
+      thoughtInputForm.reset()
     }
   }
 
   return (
     <Grid style={gridStyle}>
+      {
+        <Box
+          display="flex"
+          style={{
+            width: '100%'
+          }}
+          justifyContent="flex-end"
+        >
+          <Typography
+            fontWeight="fontWeightMedium"
+            noWrap
+            style={{ display: 'table' }}
+          >
+            Signed in as <span>{firstName}</span>
+          </Typography>
+        </Box>
+      }
       <Typography variant="h6">Write your thoughts here! 🖊️</Typography>
       <form id="thought_input_form" onSubmit={handleSubmit}>
         <Paper elevation={1} style={noteInputStyle}>
@@ -66,17 +67,18 @@ const DashboardComponent = () => {
         Saved thoughts are down here 👇
       </Typography>
       <Box display="flex" flexWrap="wrap" style={{ marginTop: '30px' }}>
-        {thoughts.map((item, index) => {
-          return (
-            <Paper
-              elevation={1}
-              key={'noteid_' + index}
-              style={thoughtItemStyle}
-            >
-              {item}
-            </Paper>
-          )
-        })}
+        {thoughts &&
+          thoughts.map((item, index) => {
+            return (
+              <Paper
+                elevation={1}
+                key={'noteid_' + index}
+                style={thoughtItemStyle}
+              >
+                {item}
+              </Paper>
+            )
+          })}
       </Box>
     </Grid>
   )

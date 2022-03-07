@@ -1,21 +1,18 @@
-import { useState, useEffect } from 'react'
-import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
+import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { Button, Grid, Paper, Typography } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import Alert from '@material-ui/lab/Alert'
-import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { logout } from '../functions/auth'
-import { db } from '../firebase'
+import { useDb } from '../context/DbContext'
 //Styles
 import { alertStyle, gridStyle, accountDetailsStyles } from '../mui/styles'
 
 const DashboardComponent = () => {
-  const [error, setError] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-
-  const { currentUser } = useAuth()
   const navigate = useNavigate()
+  const [error, setError] = useState('')
+  const { currentUser, logout } = useAuth()
+  const { firstName, lastName, userEmail } = useDb()
 
   const handleLogout = async () => {
     setError('')
@@ -26,22 +23,6 @@ const DashboardComponent = () => {
       setError(error.code)
     }
   }
-
-  useEffect(() => {
-    if (currentUser && currentUser.uid) {
-      db.collection('users')
-        .doc(currentUser.uid)
-        .onSnapshot((doc) => {
-          let docData = doc.data()
-          if (docData && docData.firstName) {
-            setFirstName(docData.firstName)
-          }
-          if (docData && docData.lastName) {
-            setLastName(docData.lastName)
-          }
-        })
-    }
-  }, [])
 
   return (
     <Grid style={gridStyle}>
@@ -62,15 +43,11 @@ const DashboardComponent = () => {
         </Typography>
         <Typography style={{ marginTop: '20px' }}>
           <strong>Email: </strong>
-          <span>{currentUser && currentUser.email}</span>
+          <span>{userEmail}</span>
         </Typography>
         <br />
       </Paper>
-      {/* <Typography style={linkStyle}>
-        You can update your profile <Link to="/login">over here</Link>
-      </Typography> */}
       <div className="homepage_divider"></div>
-
       <Box display="flex" style={{ marginTop: '40px' }}>
         <Button
           onClick={() => {

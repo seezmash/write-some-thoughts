@@ -36,7 +36,7 @@ const noteInputStyle = {
 }
 const gridStyle = {
   width: 1000,
-  margin: '40px auto 120px'
+  margin: '20px auto 120px'
 }
 
 const thoughtItemStyle = {
